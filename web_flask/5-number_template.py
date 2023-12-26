@@ -2,7 +2,6 @@
 """ Python is cool"""
 
 from flask import Flask, render_template
-from templates import number
 app = Flask(__name__)
 
 
@@ -36,7 +35,7 @@ def number(n):
 
 @app.route('/number_template/<int:n>')
 def number_template(n):
-    return render_template(number.html, n)
+    return render_template('5-number.html', n=n)
 
 
 if __name__ == "__main__":
