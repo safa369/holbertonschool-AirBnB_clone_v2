@@ -21,18 +21,19 @@ def c(name):
     return 'C {}'.format(name)
 
 
-@app.route('/python/<text>')
+@app.route('/python/', strict_slashes=False)
+@app.route('/python/<text>', strict_slashes=False)
 def pyth_text(text='is cool'):
     text = text.replace('_', ' ')
     return 'Python {}'.format(text)
 
 
-@app.route('/number/<int:n>')
+@app.route('/number/<int:n>', strict_slashes=False)
 def number(n):
     return f'{n} is a number'
 
 
-@app.route('/number_template/<int:n>')
+@app.route('/number_template/<int:n>', strict_slashes=False)
 def number_template(n):
     return render_template('5-number.html', n=n)
 
