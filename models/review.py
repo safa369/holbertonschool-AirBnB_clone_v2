@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 """ a class review"""
 
 from base_model import BaseModel
