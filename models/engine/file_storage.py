@@ -32,40 +32,45 @@ class FileStorage():
     }
 
     def all(self, cls=None):
+        """Returns the dictionary __objects."""
         if cls is not None:
             object = []
-            for i in self.__objects:
-                if isinstance(i, cls):
-                    object.append(i)
-            return object
+            for key, obj in self.__objects.items():
+                if type(obj).__name__ == cls.__name__:
+                    object[key] = obj       
+                    return object
         return self.__objects
 
     def new(self, obj):
+        """Sets in __objects the obj with key <obj class name>.id."""
         if obj:
             key = obj.__class__.__name__ + "." + str(obj.id)
             self.__objects[key] = obj
 
     def save(self):
-        dobj = {}
-        for key, val in self.__class__.__objects.items():
-            dobj[key] = val.to_dict()
+        dict_obj = {}
+        for key, val in self.__objects.items():
+            dict_obj[key] = val.to_dict()
             with open(FileStorage.__file_path, "w", encoding="utf-8") as jf:
-                json.dump(dobj, jf)
+                json.dump(dict_obj, jf)
 
     def reload(self):
         try:
-            if os.path.exists(FileStorage.__file_path):
-                with open(FileStorage.__file_path, "r",
+            with open(self.__file_path, "r",
                           encoding="utf-8") as fo:
-                    new_dict = json.load(fo)
+                new_dict = json.load(fo)
                 for key, val in new_dict.items():
-                    base = self.cl_dict[val["__class__"]](**val)
-                    self.__objects[key] = base
+                    class_name = val['__class__']
+                    del val['__class__']
+                    module = __import__('models.' + class_name, fromlist=[class_name])
+                    class_ = getattr(module, class_name)
+                    self.__objects[key] = class_(**val)
         except FileNotFoundError:
             pass
 
     def delete(self, obj=None):
+        """Deletes obj from __objects if it's inside."""
         if obj is not None:
-            for key, val in self.__objects.items():
-                if val == obj:
-                    del self.__objects[key]
+            key = "{}.{}".format(obj.__class__.__name__, obj.id)
+            if key in self.__objects:
+                del self.__objects[key]
