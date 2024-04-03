@@ -1,17 +1,12 @@
 #!/usr/bin/python3
-""" a class user"""
-
-from sqlalchemy import Column, String
-from sqlalchemy.orm import relationship
-from models.base_model import BaseModel, Base
+"""This module creates a User class"""
+from models.base_model import BaseModel
 
 
-class User(BaseModel, Base):
-    """Represents a user."""
-    __tablename__ = 'users'
+class User(BaseModel):
+    """Class for managing user objects"""
 
-    email = Column(String(128), nullable=False)
-    password = Column(String(128), nullable=False)
-    first_name = Column(String(128))
-    last_name = Column(String(128))
-    places = relationship("Place", cascade="all, delete", backref="user")
+    email = ""
+    password = ""
+    first_name = ""
+    last_name = ""
