@@ -1,33 +1,36 @@
 #!/usr/bin/python3
 """model that defines all common attributes/ methods of other classes"""
 
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import Column, String, DateTime
 from uuid import uuid4
 from datetime import datetime
 import models
 
+Base = declarative_base()
 
-class BaseModel():
+class BaseModel:
     """a class base model that defines all common attributes/methods.
     Attributes:
             id: the id of each basemodel (string).
             created_at: the date and time when the instance is created.
             updated_at: the date and time when the instance is apdated."""
 
+    id = Column(String(60), primary_key=True, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow(), nullable=False)
+    updated_at = Column(DateTime, default=datetime.utcnow(), nullable=False)
+
     def __init__(self, *args, **kwargs):
-        """assign the attributes"""
-        if kwargs:
-            del kwargs["__class__"]
-            for key, val in kwargs.items():
-                if key == "created_at" or key == "updated_at":
-                    dt_f = datetime.strptime(val, "%Y-%m-%dT%H:%M:%S.%f")
-                    setattr(self, key, dt_f)
-                else:
-                    setattr(self, key, val)
-        else:
+        for key, value in kwargs.items():
+            setattr(self, key, value)
+        if 'id' not in kwargs:
             self.id = str(uuid4())
-            self.created_at = datetime.now()
-            self.updated_at = datetime.now()
-            models.storage.new(self)
+        if 'created_at' not in kwargs:
+            self.created_at = datetime.utcnow()
+        if 'updated_at' not in kwargs:
+            self.updated_at = datetime.utcnow()
+        models.storage.new(self)
+
 
     def __str__(self):
         """return the infrmation n human readable"""
@@ -36,7 +39,6 @@ class BaseModel():
 
     def save(self):
         """save the current datetime of the updates """
-        updated_at = datetime.now()
         models.storage.save()
 
     def to_dict(self):
