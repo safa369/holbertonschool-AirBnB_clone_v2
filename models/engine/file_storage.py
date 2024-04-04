@@ -54,6 +54,7 @@ class FileStorage():
             with open(FileStorage.__file_path, "w", encoding="utf-8") as jf:
                 json.dump(dict_obj, jf)
 
+
     def reload(self):
         try:
             with open(self.__file_path, "r",
@@ -62,7 +63,7 @@ class FileStorage():
                 for key, val in new_dict.items():
                     class_name = val['__class__']
                     del val['__class__']
-                    module = __import__('models.' + class_name, fromlist=[class_name])
+                    module = __import__('models.' + class_name.lower(), fromlist=[class_name])
                     class_ = getattr(module, class_name)
                     self.__objects[key] = class_(**val)
         except FileNotFoundError:
