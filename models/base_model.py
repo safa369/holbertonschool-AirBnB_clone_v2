@@ -9,6 +9,7 @@ import models
 
 Base = declarative_base()
 
+
 class BaseModel:
     """a class base model that defines all common attributes/methods.
     Attributes:
@@ -30,7 +31,6 @@ class BaseModel:
         if 'updated_at' not in kwargs:
             self.updated_at = datetime.utcnow()
         models.storage.new(self)
-
 
     def __str__(self):
         """return the infrmation n human readable"""
