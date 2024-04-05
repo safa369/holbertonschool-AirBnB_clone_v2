@@ -1,19 +1,28 @@
 #!/usr/bin/python3
 """ a class user"""
-
+import models
 from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
 from models.base_model import BaseModel, Base
 from os import getenv
 
-class User(BaseModel, Base):
-    """Represents a user."""
-    __tablename__ = 'users'
 
-    email = Column(String(128), nullable=False)
-    password = Column(String(128), nullable=False)
-    first_name = Column(String(128))
-    last_name = Column(String(128))
-    places = relationship("Place", cascade="all, delete", backref="user")
-    places = relationship("Place", cascade="all, delete", backref="user")
-    reviews = relationship("Review", backref="user", cascade="delete")
+class User(BaseModel, Base):
+    """Representation of a user """
+    if models.storage_t == 'db':
+        __tablename__ = 'users'
+        email = Column(String(128), nullable=False)
+        password = Column(String(128), nullable=False)
+        first_name = Column(String(128), nullable=True)
+        last_name = Column(String(128), nullable=True)
+        places = relationship("Place", backref="user")
+
+    else:
+        email = ""
+        password = ""
+        first_name = ""
+        last_name = ""
+
+    def __init__(self, *args, **kwargs):
+        """initializes user"""
+        super().__init__(*args, **kwargs)
